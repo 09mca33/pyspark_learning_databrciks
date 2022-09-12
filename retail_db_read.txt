@@ -1,0 +1,35 @@
+import json
+retail_schemas = json.load(open('C:/Users/VV232LY/Learning/pyspark/data-master/data-master/retail_db_schema.json'))
+
+# schema = ''
+
+# for i in retail_schemas['orders']:
+#     print (i['column_name'],i['data_type'])
+#     schema = schema +' ' +i['column_name'] +' '+ 'string' +','
+    
+# print (schema)
+
+
+
+
+#retail_schemas['orders']
+columns = list(map(lambda col: col['column_name'], retail_schemas['orders']))
+print(columns)
+
+
+
+import pandas as pd
+input = pd.read_csv('C:/Users/VV232LY/Learning/pyspark/data-master/data-master/retail_db/orders/part-00000', names=columns)
+
+
+
+orders = spark.createDataFrame(input)
+
+
+
+#print(orders.columns)  #['order id$$', 'order *date', 'ORDER_customer_id', 'order_STATUS']
+
+import re
+df=orders.toDF(*[re.sub('[^A-Za-z0-9]','',col.upper()) for col in orders.columns])
+
+df.show()
